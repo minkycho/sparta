@@ -1,0 +1,35 @@
+body {
+        background-color: white;
+        width:300px;
+        margin: 0 auto 0 auto;
+      }
+       
+      .small-font {
+        
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .mytitle {
+        font-family: 'Sunflower', sans-serif;
+    }
+      
+
+      .margin-padding-test {
+        width: 300px;
+        height: 200px;
+        padding: 0px;
+        margin: 0px;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        align-items : center;
+        justify-content : center;
+       /**/
+        background: url('http://www.forest.go.kr/newkfsweb/cmm/fms/FileDown.do?atchFileId=FILE_000000010008639&fileSn=0');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        color: white;
+        text-align: center;
+        border-radius: 10px
