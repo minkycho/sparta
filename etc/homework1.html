@@ -1,123 +1,226 @@
 <!doctype html>
 <html>	
-	<head>
-		<title>Tiffany & Co Diamond Flower Ring in Platinum (0.60CWT)Size 5 </title>
+<head>
+  <title>Tiffany & Co Diamond Flower Ring in Platinum (0.60CWT)Size 5 </title>
 
-		<style>
-      .mytitle {
-        color: black;
-        text-align: center;
-       
-        background-size: cover;
-        background-position: center;
-        width: 400px;
-        height: 300px;
-        border-radius: 10px;
-
-			
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
-			
-			
-      .mytitle > h2 {
-        margin: 0 0 5px 0;
-      }
-			
-			
-      .mytitle > h5 {
-        margin: 5px 0 0 0;
+ <script type="text/javascript">
+      function isCellPhone(p) {
+        var regExp = /^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})[-][0-9]{3,4}[-][0-9]{4}$/;
+        return regExp.test(p);
       }
 
-   	 </style>
-		<body>
-	
+      function order() {
+        let name = $('#order_name').val();
+        let count = $('#order_count').val();
+        let address = $('#order_address').val();
+        let phone = $('#order_phone').val();
 
-			<style>
-      .mytitle {
-        
-      
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        if (name == ''){
+          alert('이름을 입력해주세요')
+          $('#order_name').focus()
+          return
+        } else if (count == ''){
+          alert('수량을 입력해주세요')
+          $('#order_count').focus()
+          return
+        } else if (address == ''){
+          alert('주소를 입력해주세요')
+          $('#order_address').focus()
+          return
+        } else if (phone == ''){
+          alert('휴대폰번호를 입력해주세요')
+          $('#order_phone').focus()
+          return
+        } else if (!isCellPhone(phone)) {
+          alert('휴대폰번호 입력 형식이 틀립니다. \n 010-0000-0000으로 입력해주세요')
+          return
+        }
+
+        $.ajax({
+          type: "POST",
+          url: "/order",
+          data: { name_give:name, count_give:count, address_give:address, phone_give:phone },
+          success: function(response){
+            if(response['result'] == 'success'){
+              alert('주문 완료!');
+              window.location.reload();
+            }
+          }
+        })
       }
 
-      .mytitle > h1 {
-        margin: 0 0 5px 0;
+      $(document).ready(function(){
+        $('#orders-box').html('');
+        listing();
+      });
+
+      function listing() {
+        $.ajax({
+          type: "GET",
+          url: "/order",
+          data: {},
+          success: function(response){
+             if (response['result'] == 'success') {
+               let orders = response['orders'];
+               console.log(orders);
+               for (let i = 0; i < orders.length; i++) {
+                 make_card(orders[i]['name'],orders[i]['count'],orders[i]['address'],orders[i]['phone'])
+               }
+             } 
+          }
+        })
       }
 
-      .mytitle > h5 {
-        margin: 5px 0 0 0;
+      function make_card(name,count,address,phone) {
+        let temp_html = '<tr>\
+            <td>'+name+'</td>\
+            <td>'+count+'</td>\
+            <td>'+address+'</td>\
+            <td>'+phone+'</td>\
+          </tr>';
+        $('#orders-box').append(temp_html);
       }
+    </script>
 
-      .wrap {
-        width: 300px;
-        margin: 50px auto 0 auto;
-      }
+ 
+  <style>
 
-    </style>
-				<span class="border border-dark"></span>
-				</style>
-			    
-			     <img src= "ring.png" width="400" height="400">
-			      
-				<div> 
-				<img src= "qwqw.png"  width="120" height="120">
-			 	<img src= "hyhy.png"  width="120" height="120">
-			       <img src= "dfdf.png"  width="120" height="120">
-			       </div>       
-		<div class="mytitle">
-      	<h2> Tiffany & Co. Flower Diamond Ring</h2> <h3> Price : 7900$ </h3>
-      
-     	 <h5>A unique Tiffany & Co. diamond flower ring in platinum. The ring consists of a single round brilliant cut diamond for the centre. Complimenting the centre is a halo of 8 round brilliant cut diamonds with a further 8 round brilliant cut diamonds surrounding the outer edge, totalling approximately 0.60ct. The ring is currently a size K but can be adjusted for a perfect fit with a gross weight of 4.50 grams.</h5>
-   		 </div>
+    
+    .mytitle {
+      color: black;
+      text-align: center;
 
-  
-	<div class="form-group">
-	
+      background-size: cover;
+      background-position: center;
+      width: 400px;
+      height: 300px;
+      border-radius: 10px;
 
-    <label for="exampleFormControlSelect1"> </label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>1</option>
-      <option>2</option>
-      <option>3</option>
-      <option>4</option>
-      <option>5</option>
-    </select>
-	  </div>
-	<div class="input-group flex-nowrap">
-	  <div class="input-group-prepend">
-    <span class="input-group-text" id="addon-wrapping"> </span>
-  	</div>
- 	 <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="addon-wrapping">
-	</div>
 
-		<div class="input-group flex-nowrap">
-		  <div class="input-group-prepend">
-		    <span class="input-group-text" id="addon-wrapping"></span>
-		  </div>
-		  <input type="text" class="form-control" placeholder="Adress" aria-label="Adress" aria-describedby="addon-wrapping">
-		</div>
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
 
-		<div class="input-group flex-nowrap">
-		  <div class="input-group-prepend">
-		    <span class="input-group-text" id="addon-wrapping"></span>
-		  </div>
-		  <input type="text" class="form-control" placeholder="Phone number" aria-label="Phone number" aria-describedby="addon-wrapping">
-		</div>
 
-				<button type="button" class="btn btn-light">cart</button>
-				<button type="button" class="btn btn-light">buy now</button>
+    .mytitle > h2 {
+      margin: 0 0 5px 0;
+    }
 
-			
-					
-			</body>
 
-			
-			</style>
+    .mytitle > h5 {
+      margin: 5px 0 0 0;
+    }
 
-		
+  </style>
+  <body>
+
+
+   <style>
+    .mytitle {
+
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mytitle > h1 {
+      margin: 0 0 5px 0;
+    }
+
+    .mytitle > h5 {
+      margin: 5px 0 0 0;
+    }
+
+    .wrap {
+      width: 300px;
+      margin: 50px auto 0 auto;
+    }
+
+
+  </style>
+  <span class="border border-dark"></span>
+</style>
+
+<img src= "ring.png" width="400" height="400">
+
+<div> 
+  <img src= "qwqw.png"  width="120" height="120">
+  <img src= "hyhy.png"  width="120" height="120">
+  <img src= "dfdf.png"  width="120" height="120">
+</div>       
+<div class="mytitle">
+ <h2> Tiffany & Co. Flower Diamond Ring</h2> <h3> Price : 7900$ </h3>
+
+ <h5>A unique Tiffany & Co. diamond flower ring in platinum. The ring consists of a single round brilliant cut diamond for the centre. Complimenting the centre is a halo of 8 round brilliant cut diamonds with a further 8 round brilliant cut diamonds surrounding the outer edge, totalling approximately 0.60ct. The ring is currently a size K but can be adjusted for a perfect fit with a gross weight of 4.50 grams.</h5>
+</div>
+
+
+
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon3">주문자 이름</span>
+          </div>
+          <input type="text" class="form-control" id="order_name" aria-describedby="basic-addon3">
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="inputGroupSelect01">수량</label>
+          </div>
+          <select class="custom-select" id="order_count">
+            <option selected value=""> -- 수량을 선택하세요 -- </option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon3">주소</span>
+          </div>
+          <input type="text" class="form-control" id="order_address" aria-describedby="basic-addon3">
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon3">전화번호</span>
+          </div>
+          <input type="text" class="form-control" id="order_phone" aria-describedby="basic-addon3">
+        </div>
+        <div class="order">
+          <button onclick="order()" type="button" class="btn btn-primary">주문하기</button>
+        </div>
+      </div>
+      <div class="orders">
+        <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">이름</th>
+            <th scope="col">수량</th>
+            <th scope="col">주소</th>
+            <th scope="col">전화번호</th>
+          </tr>
+        </thead>
+        <tbody id="orders-box">
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          
+        </tbody>
+      </table>
+      </div>
+    </div>
+</body>
+
+
+</body>
+
+
+</style>
+
+
 </html>
