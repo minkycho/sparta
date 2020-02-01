@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!— Webpage Title —>
+    <title>나홀로 쇼핑몰</title>
+
+    <!— Required meta tags —>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!— Bootstrap CSS —>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!— JS —>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <!— 구글폰트 —>
+    <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet">
+
+    <script type="text/javascript">
+      <!— 휴대폰 번호 형식 000-0000-0000 정규식으로 체크하는 부분!! —>
+      function isCellPhone(p) {
+        var regExp = /^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})[-][0-9]{3,4}[-][0-9]{4}$/;
+        return regExp.test(p);
+      }
+
+      <!— 이 Order 함수는 어디에서 불릴까요? —>
+      function order() {
+        let name = $('#order_name').val(); <!— 주문자 이름 받아오는 부분—>
+        let count = $('#order_count').val(); <!— 주문 수량 받아오는 부분!! —>
+        let address = $('#order_address').val(); <!— 주문자 주소 받아오는 부분!! —>
+        let phone = $('#order_phone').val(); <!— 주문자 핸드폰 번호 받아오는 부분 —>
+
+        <!— 주문자 이름 입력 유무 체크—>
+        if (name == ''){
+          alert('이름을 입력해주세요')
+          $('#order_name').focus()
+          return
+        } else if (count == ''){
+          ≈
+          alert('수량을 입력해주세요')
+          $('#order_count').focus()
+          return
+        } else if (address == ''){
+          <!— 수량 입력 유무 체크—>
+          alert('주소를 입력해주세요')
+          $('#order_address').focus()
+          return
+        } else if (phone == ''){
+          <!— 번호 입력 유무 체크—>
+          alert('휴대폰번호를 입력해주세요')
+          $('#order_phone').focus()
+          return
+        } else if (!isCellPhone(phone)) {
+          <!— 휴대폰 입력 형식 체크—>
+          alert('휴대폰번호 입력 형식이 틀립니다. \n 010-0000-0000으로 입력해주세요')
+          return
+        }
+        <!— order 함수의 마지막에는 ajax 요청을 보냅니다!! —>
+        $.ajax({
+          type: "POST", <!— 실습시간에 보지 못했던 POST 요청, 주로 데이터 생성,삭제,수정을 할 때는 POST로 요청을 보냅니다! —>
+          url: "http://spartacodingclub.shop/order", <!— URL은 스파르타코딩 클럽에서 미리 세팅해 둔 URL로 여러분도 이 URL을 그대로 사용하시면 됩니다!! —>
+          data: { name_give:name, count_give:count, address_give:address, phone_give:phone }, <!— 데이터 생성을 위해서는 어떤 데이터로 생성할 건지를 알려줘야겠죠?? 입력받은 값을 data에 넣어줍니다!!! —>
+          success: function(response){
+            if(response['result'] == 'success'){
+              alert('주문 완료!');
+              window.location.reload(); <!— 새로 고침해주는 코드 —>
+            }
+          }
+        })
+      }
+
+      <!— 이 부분도 처음 보는 코드입니다—>
+      $(document).ready(function(){
+        <!— document ready 안에 있는 코드는, 해당 페이지가 로드되었을 때 바로 실행시킬 코드를 넣어두시면 됩니다. 페이지가 나타나자마자 해야할 일이 있다면 바로 여깁니다!!—>
+        $('#orders-box').html(''); <!— 내부 html을 비워주는 코드!—>
+        listing();
+      });
+
+      function listing() {
+        $.ajax({
+          type: "GET", <!— 데이터를 조회할 때 쓰는 GET 요청—>
+          url: "http://spartacodingclub.shop/order", <!— URL은 스파르타코딩 클럽에서 미리 세팅해 둔 URL로 여러분도 이 URL을 그대로 사용하시면 됩니다!! —>
+          data: {}, <!— 조회 용도이기 때문에 별도로 보낼 데이터가 없습니다! POST와 다르다는 것을 기억해주세요!!—>
+          success: function(response){
+             if (response['result'] == 'success') {
+               let orders = response['orders'];
+               console.log(orders);
+               for (let i = 0; i < orders.length; i++) {
+                 make_card(orders[i]['name'],orders[i]['count'],orders[i]['address'],orders[i]['phone'])
+               }
+             } else {
+               alert('기사를 받아오지 못했습니다');
+             }
+          }
+        })
+      }
+
+      function make_card(name,count,address,phone) {
+        let temp_html = '<tr>\
+            <td>'+name+'</td>\
+            <td>'+count+'</td>\
+            <td>'+address+'</td>\
+            <td>'+phone+'</td>\
+          </tr>';
+        $('#orders-box').append(temp_html);
+      }
+    </script>
+
+    <style type="text/css">
+      * {
+        font-family: 'Stylish', sans-serif;
+      }
+      .wrap {
+        width: 500px;
+        margin: auto;
+      }
+      .img {
+        background-image: url('https://www.conscious-skincare.com/wp-content/uploads/2016/02/glc-candle-lit-with-new-gift-box.jpg');
+        background-size: cover;
+        background-position: center;
+        width: 500px;
+        height: 300px;
+      }
+      .info {
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
+      .user-info {
+        margin: 20px 5px auto 5px;
+      }
+      h1, h5 {
+        display: inline;
+      }
+      .order {
+        text-align: center;
+      }
+      .orders {
+        margin-top: 100px;
+      }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+      <div class="img"></div>
+      <div class="info">
+        <h1>양초를 팝니다</h1>
+        <h5>가격: 3,000원/개</h5>
+        <p>이 양초는 사실 특별한 힘을 가지고 있어요. 양초를 켜고 소원을 빌면 짜자잔 뭐든지 이뤄지게 된답니다. 하나 사가세요! 대나무 향이 아주 좋아요</p>
+      </div>
+      <div class="info">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon3">주문자 이름</span>
+          </div>
+          <input type="text" class="form-control" id="order_name" aria-describedby="basic-addon3">
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="inputGroupSelect01">수량</label>
+          </div>
+          <select class="custom-select" id="order_count">
+            <option selected value=""> — 수량을 선택하세요 — </option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon3">주소</span>
+          </div>
+          <input type="text" class="form-control" id="order_address" aria-describedby="basic-addon3">
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon3">전화번호</span>
+          </div>
+          <input type="text" class="form-control" id="order_phone" aria-describedby="basic-addon3">
+        </div>
+        <div class="order">
+          <!— Order 함수는 여기 button onclick에서 불립니다! —>
+          <button onclick="order()" type="button" class="btn btn-primary">주문하기</button>
+        </div>
+      </div>
+      <div class="orders">
+        <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">이름</th>
+            <th scope="col">수량</th>
+            <th scope="col">주소</th>
+            <th scope="col">전화번호</th>
+          </tr>
+        </thead>
+        <tbody id="orders-box">
+          <tr>
+            <td>Otto</td>
+            <td>@mdo</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+          </tr>
+
+        </tbody>
+      </table>
+      </div>
+    </div>
+</body>
+</html>

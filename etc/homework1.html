@@ -3,89 +3,90 @@
 <head>
   <title>Tiffany & Co Diamond Flower Ring in Platinum (0.60CWT)Size 5 </title>
 
- <script type="text/javascript">
-      function isCellPhone(p) {
-        var regExp = /^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})[-][0-9]{3,4}[-][0-9]{4}$/;
-        return regExp.test(p);
+  <script type="text/javascript">
+    function isCellPhone(p) {
+      var regExp = /^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})[-][0-9]{3,4}[-][0-9]{4}$/;
+      return regExp.test(p);
+    }
+
+    function order() {
+      let name = $('#order_name').val();
+      let count = $('#order_count').val();
+      let address = $('#order_address').val();
+      let phone = $('#order_phone').val();
+
+
+      if (name == ''){
+        alert('이름을 입력해주세요')
+        $('#order_name').focus()
+        return
+      } else if (count == ''){
+        alert('수량을 입력해주세요')
+        $('#order_count').focus()
+        return
+      } else if (address == ''){
+        alert('주소를 입력해주세요')
+        $('#order_address').focus()
+        return
+      } else if (phone == ''){
+        alert('휴대폰번호를 입력해주세요')
+        $('#order_phone').focus()
+        return
+      } else if (!isCellPhone(phone)) {
+        alert('휴대폰번호 입력 형식이 틀립니다. \n 010-0000-0000으로 입력해주세요')
+        return
       }
 
-      function order() {
-        let name = $('#order_name').val();
-        let count = $('#order_count').val();
-        let address = $('#order_address').val();
-        let phone = $('#order_phone').val();
-
-        if (name == ''){
-          alert('이름을 입력해주세요')
-          $('#order_name').focus()
-          return
-        } else if (count == ''){
-          alert('수량을 입력해주세요')
-          $('#order_count').focus()
-          return
-        } else if (address == ''){
-          alert('주소를 입력해주세요')
-          $('#order_address').focus()
-          return
-        } else if (phone == ''){
-          alert('휴대폰번호를 입력해주세요')
-          $('#order_phone').focus()
-          return
-        } else if (!isCellPhone(phone)) {
-          alert('휴대폰번호 입력 형식이 틀립니다. \n 010-0000-0000으로 입력해주세요')
-          return
+      $.ajax({
+        type: "POST",
+        url: "/order",
+        data: { name_give:name, count_give:count, address_give:address, phone_give:phone },
+        success: function(response){
+          if(response['result'] == 'success'){
+            alert('주문 완료!');
+            window.location.reload();
+          }
         }
+      })
+    }
 
-        $.ajax({
-          type: "POST",
-          url: "/order",
-          data: { name_give:name, count_give:count, address_give:address, phone_give:phone },
-          success: function(response){
-            if(response['result'] == 'success'){
-              alert('주문 완료!');
-              window.location.reload();
-            }
-          }
-        })
-      }
+    $(document).ready(function(){
+      $('#orders-box').html('');
+      listing();
+    });
 
-      $(document).ready(function(){
-        $('#orders-box').html('');
-        listing();
-      });
+    function listing() {
+      $.ajax({
+        type: "GET",
+        url: "/order",
+        data: {},
+        success: function(response){
+         if (response['result'] == 'success') {
+           let orders = response['orders'];
+           console.log(orders);
+           for (let i = 0; i < orders.length; i++) {
+             make_card(orders[i]['name'],orders[i]['count'],orders[i]['address'],orders[i]['phone'])
+           }
+         } 
+       }
+     })
+    }
 
-      function listing() {
-        $.ajax({
-          type: "GET",
-          url: "/order",
-          data: {},
-          success: function(response){
-             if (response['result'] == 'success') {
-               let orders = response['orders'];
-               console.log(orders);
-               for (let i = 0; i < orders.length; i++) {
-                 make_card(orders[i]['name'],orders[i]['count'],orders[i]['address'],orders[i]['phone'])
-               }
-             } 
-          }
-        })
-      }
+    function make_card(name,count,address,phone) {
+      let temp_html = '<tr>\
+      <td>'+name+'</td>\
+      <td>'+count+'</td>\
+      <td>'+address+'</td>\
+      <td>'+phone+'</td>\
+      </tr>';
+      $('#orders-box').append(temp_html);
+    }
+  </script>
 
-      function make_card(name,count,address,phone) {
-        let temp_html = '<tr>\
-            <td>'+name+'</td>\
-            <td>'+count+'</td>\
-            <td>'+address+'</td>\
-            <td>'+phone+'</td>\
-          </tr>';
-        $('#orders-box').append(temp_html);
-      }
-    </script>
 
- 
   <style>
 
-    
+
     .mytitle {
       color: black;
       text-align: center;
@@ -160,60 +161,60 @@
 
 
 
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon3">주문자 이름</span>
-          </div>
-          <input type="text" class="form-control" id="order_name" aria-describedby="basic-addon3">
-        </div>
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <label class="input-group-text" for="inputGroupSelect01">수량</label>
-          </div>
-          <select class="custom-select" id="order_count">
-            <option selected value=""> -- 수량을 선택하세요 -- </option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-          </select>
-        </div>
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon3">주소</span>
-          </div>
-          <input type="text" class="form-control" id="order_address" aria-describedby="basic-addon3">
-        </div>
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon3">전화번호</span>
-          </div>
-          <input type="text" class="form-control" id="order_phone" aria-describedby="basic-addon3">
-        </div>
-        <div class="order">
-          <button onclick="order()" type="button" class="btn btn-primary">주문하기</button>
-        </div>
-      </div>
-      <div class="orders">
-        <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">이름</th>
-            <th scope="col">수량</th>
-            <th scope="col">주소</th>
-            <th scope="col">전화번호</th>
-          </tr>
-        </thead>
-        <tbody id="orders-box">
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-          
-        </tbody>
-      </table>
-      </div>
-    </div>
+<div class="input-group-prepend">
+  <span class="input-group-text" id="basic-addon3">주문자 이름</span>
+</div>
+<input type="text" class="form-control" id="order_name" aria-describedby="basic-addon3">
+</div>
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <label class="input-group-text" for="inputGroupSelect01">수량</label>
+  </div>
+  <select class="custom-select" id="order_count">
+    <option selected value=""> -- 수량을 선택하세요 -- </option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+  </select>
+</div>
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon3">주소</span>
+  </div>
+  <input type="text" class="form-control" id="order_address" aria-describedby="basic-addon3">
+</div>
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon3">전화번호</span>
+  </div>
+  <input type="text" class="form-control" id="order_phone" aria-describedby="basic-addon3">
+</div>
+<div class="order">
+  <button onclick="order()" type="button" class="btn btn-primary">주문하기</button>
+</div>
+</div>
+<div class="orders">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">이름</th>
+        <th scope="col">수량</th>
+        <th scope="col">주소</th>
+        <th scope="col">전화번호</th>
+      </tr>
+    </thead>
+    <tbody id="orders-box">
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+
+    </tbody>
+  </table>
+</div>
+</div>
 </body>
 
 
