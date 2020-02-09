@@ -48,16 +48,16 @@
 			alert('휴대폰번호를 입력해주세요')
 			$('#order_phone').focus()
 			return
-		} else if (!isCellphone(phone)) {
+		} else if (!isCellPhone(phone)) {
 			
 			alert('휴대폰번호 입력 형식이 틀립니다. \n 010-0000-0000으로 입력해주세요')
 			return
 		}
 	
 		$.ajax({
-          type: "POST"
-          url: "http://spartacodingclub.shop/order"
-          data: { name_give:name, count_give:count, address_give:address, phone_give:phone }
+          type: "POST",
+          url: "http://spartacodingclub.shop/order",
+          data: { name_give:name, count_give:count, address_give:address, phone_give:phone },
           success: function(response){
             if(response['result'] == 'success'){
               alert('주문 완료!');
@@ -75,14 +75,14 @@
 
 		function listing(){
 			$.ajax({
-				type: "GET"
-				url: "http://spartacodingclub.shop/order"
-				data:{}
+				type: "GET",
+				url: "http://spartacodingclub.shop/order",
+				data:{},
 				success: function(response){
 					if (response['result']== 'success'){
 						let orders = response['orders'];
 						console.log(orders);
-						for (let i = 0; i < orders.length; i==) {
+						for (let i = 0; i < orders.length; i++) {
 							make_card(orders[i]['name'],orders[i]['count'],orders[i]['address'],orders[i][
 							'phone'])
 						}
@@ -181,7 +181,7 @@
         </div>
         <div class="order">
           <!— Order 함수는 여기 button onclick에서 불립니다! —>
-          <button onclick="order()" type="button" class="btn btn-primary">주문하기</button>
+          <button onclick="order()" type="button" class="btn btn-primary"> </button>
         </div>
       </div>
       <div class="orders">
